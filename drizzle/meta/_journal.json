@@ -1,0 +1,20 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1687955885250,
+      "tag": "0000_bouncy_lockheed",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1687956027668,
+      "tag": "0001_living_living_lightning",
+      "breakpoints": true
+    }
+  ]
+}
