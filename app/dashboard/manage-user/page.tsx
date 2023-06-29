@@ -1,18 +1,12 @@
 import { db } from "@/lib/drizzle";
 import { User, user } from "@/lib/drizzle/schema/users";
-import { cookies } from "next/headers";
+import { DataTable } from "./data-table";
+import { columns } from "./columns";
+import AddUserForm, { addUserschema } from "./add-user-form";
+import { z } from "zod";
 
-export type UserDataTypes = {
-  id: string;
-  email: string;
-  firstname: string;
-  lastname: string;
-  tel: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  usergroup: number;
-  username: string;
+export const metadata = {
+  title: "Storage | จัดการผู้ใช้",
 };
 
 async function getData() {
@@ -22,12 +16,14 @@ async function getData() {
 
 export default async function ManageUser() {
   const users: User[] = await getData();
+
   console.log(users);
   return (
-    <div>
-      {users.map((e) => {
-        return <p key={e.id}>{e.firstname}</p>;
-      })}
-    </div>
+    <>
+      <div className="py-2">
+        <AddUserForm />
+      </div>
+      <DataTable columns={columns} data={users} />
+    </>
   );
 }

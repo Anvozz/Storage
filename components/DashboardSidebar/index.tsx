@@ -15,14 +15,14 @@ const DashboardSidebar = () => {
   return (
     <>
       <div
-        className={` bg-background/95 ${
-          dashboard.isSidebarCollapse ? "w-14" : "w-[250px]"
+        className={` bg-background ${
+          dashboard.isSidebarCollapse ? "w-[4%]" : "w-1/6"
         } min-h-screen hidden lg:block`}
       >
         <div
           className={`fixed mt-[3.5rem] border-r ${
-            dashboard.isSidebarCollapse ? "w-14" : "w-[250px]"
-          }`}
+            dashboard.isSidebarCollapse ? "w-[4%]" : "w-1/6"
+          } `}
         >
           <MenuContainer />
         </div>

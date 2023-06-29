@@ -2,6 +2,7 @@ import "./globals.css";
 import { Prompt } from "next/font/google";
 import AuthWrapper from "@/components/Authwrapper";
 import TailwindIndicator from "@/components/tailwind-indicator";
+import DashboardContextProvider from "@/context/DashboardContext";
 
 // const inter = Inter({ subsets: ["latin"] });
 const prompts = Prompt({
@@ -23,8 +24,10 @@ export default function RootLayout({
     <AuthWrapper>
       <html lang="en">
         <body className={prompts.className}>
-          <div>{children}</div>
-          <TailwindIndicator />
+          <DashboardContextProvider>
+            <div>{children}</div>
+            <TailwindIndicator />
+          </DashboardContextProvider>
         </body>
       </html>
     </AuthWrapper>

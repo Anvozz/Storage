@@ -15,6 +15,13 @@
       "when": 1687956027668,
       "tag": "0001_living_living_lightning",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1688043158795,
+      "tag": "0002_overconfident_thanos",
+      "breakpoints": true
     }
   ]
 }

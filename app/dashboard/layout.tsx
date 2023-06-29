@@ -1,6 +1,9 @@
+"use client";
 import DashboardNavbar from "@/components/DashboardNavbar";
 import DashboardSidebar from "@/components/DashboardSidebar";
-import DashboardContextProvider from "@/context/DashboardContext";
+import DashboardContextProvider, {
+  useDashboardContext,
+} from "@/context/DashboardContext";
 
 export const metadata = {
   title: "Storage | Dashboard",
@@ -12,13 +15,21 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { dashboard } = useDashboardContext();
+  ("use server");
   return (
-    <DashboardContextProvider>
+    <>
       <DashboardNavbar />
       <div className="flex">
         <DashboardSidebar />
-        <div className="ml-10 mt-14 w-full">{children}</div>
+        <div
+          className={`mt-14 ${
+            dashboard.isSidebarCollapse ? "lg:w-[96%]" : "lg:w-5/6"
+          } w-screen`}
+        >
+          {children}
+        </div>
       </div>
-    </DashboardContextProvider>
+    </>
   );
 }

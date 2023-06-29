@@ -10,8 +10,8 @@ export const user = pgTable("user", {
   email: text("email"),
   password: text("password"),
   role: text("role").$type<"admin" | "user">(),
-  createdAt: timestamp("created_at"),
-  updatedAt: timestamp("updated_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export type User = InferModel<typeof user, "select">;
