@@ -20,7 +20,11 @@ import {
 import { User } from "@/lib/drizzle/schema/users";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import Swal from "sweetalert2";
 import { z } from "zod";
+import { deleteUser } from "../actions";
+import { useRouter } from "next/navigation";
+import { updateUser } from "./action";
 
 export const editUserschema = z.object({
   id: z.string(),
@@ -29,7 +33,8 @@ export const editUserschema = z.object({
   tel: z.string().min(10),
   role: z.string(),
   email: z.string().email(),
-  password: z.string().min(6),
+  isActive: z.string(),
+  password: z.string(),
 });
 
 type UserPropsType = {
@@ -37,22 +42,96 @@ type UserPropsType = {
 };
 
 export default function ViewEditUserForm({ data }: UserPropsType) {
+  const router = useRouter();
   const form = useForm<z.infer<typeof editUserschema>>({
     resolver: zodResolver(editUserschema),
     defaultValues: {
-      id: data.id || "",
-      firstname: data.firstname || "",
-      lastname: data.lastname || "",
-      tel: data.tel || "",
-      role: data.role || "",
-      email: data.email || "",
+      id: data?.id || "",
+      firstname: data?.firstname || "",
+      lastname: data?.lastname || "",
+      tel: data?.tel || "",
+      role: data?.role || "",
+      email: data?.email || "",
+      isActive: data?.isActive ? "true" : "false" || "false",
       password: "",
     },
   });
-  console.log(data);
+  /** Delete User function */
+  async function onDelete() {
+    Swal.fire({
+      title: `ยืนยันการลบผู้ใช้ ${data.firstname} ${data.lastname} ?`,
+      text: "กดยืนยันเพื่อลบผู้ใช้นี้",
+      icon: "info",
+      confirmButtonText: "ยืนยัน",
+      confirmButtonColor: "#000",
+      cancelButtonText: "ยกเลิก",
+      cancelButtonColor: "#8f8f8f",
+      showCancelButton: true,
+    }).then(async (res) => {
+      if (res.isConfirmed) {
+        const deleteUsers = await deleteUser(data.id);
+        if (deleteUsers.success) {
+          Swal.fire({
+            title: deleteUsers.messgae,
+            text: "กดยืนยันเพื่อปิดหน้าต่างนี้",
+            icon: "success",
+            confirmButtonText: "ยืนยัน",
+            confirmButtonColor: "#000",
+          }).then(async (res) => {
+            if (res.isConfirmed) {
+              router.push("/manage-user");
+            }
+          });
+        } else {
+          Swal.fire({
+            title: deleteUsers.messgae,
+            text: "กดยืนยันเพื่อปิดหน้าต่างนี้",
+            icon: "error",
+            confirmButtonText: "ยืนยัน",
+            confirmButtonColor: "#000",
+          });
+        }
+      }
+    });
+  }
   async function onSubmit(values: z.infer<typeof editUserschema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
+    Swal.fire({
+      title: `ยืนยันการแก้ไขผู้ใช้ ${data.firstname} ${data.lastname} ?`,
+      text: "กดยืนยันเพื่อแก้ไขผู้ใช้นี้",
+      icon: "info",
+      confirmButtonText: "ยืนยัน",
+      confirmButtonColor: "#000",
+      cancelButtonText: "ยกเลิก",
+      cancelButtonColor: "#8f8f8f",
+      showCancelButton: true,
+    }).then(async (res) => {
+      if (res.isConfirmed) {
+        const updateUsers = await updateUser(values, data.id);
+        if (updateUsers.success) {
+          Swal.fire({
+            title: updateUsers.messgae,
+            text: "กดยืนยันเพื่อปิดหน้าต่างนี้",
+            icon: "success",
+            confirmButtonText: "ยืนยัน",
+            confirmButtonColor: "#000",
+          }).then(async (res) => {
+            if (res.isConfirmed) {
+              router.push("/manage-user");
+            }
+          });
+        } else {
+          Swal.fire({
+            title: updateUsers.messgae,
+            text: "กดยืนยันเพื่อปิดหน้าต่างนี้",
+            icon: "error",
+            confirmButtonText: "ยืนยัน",
+            confirmButtonColor: "#000",
+          });
+        }
+      }
+    });
   }
   return (
     <>
@@ -83,9 +162,6 @@ export default function ViewEditUserForm({ data }: UserPropsType) {
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
-                {/* <FormDescription>
-                      This is your public display name.
-                    </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -99,9 +175,6 @@ export default function ViewEditUserForm({ data }: UserPropsType) {
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
-                {/* <FormDescription>
-                      This is your public display name.
-                    </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -115,9 +188,6 @@ export default function ViewEditUserForm({ data }: UserPropsType) {
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
-                {/* <FormDescription>
-                      This is your public display name.
-                    </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -129,11 +199,8 @@ export default function ViewEditUserForm({ data }: UserPropsType) {
               <FormItem>
                 <FormLabel>อีเมลล์</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input disabled {...field} />
                 </FormControl>
-                {/* <FormDescription>
-                      This is your public display name.
-                    </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -147,9 +214,30 @@ export default function ViewEditUserForm({ data }: UserPropsType) {
                 <FormControl>
                   <Input type="Password" {...field} />
                 </FormControl>
-                {/* <FormDescription>
-                      This is your public display name.
-                    </FormDescription> */}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="isActive"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>สถานะการใช้งาน</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a verified email to display" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="true">ใช้งาน</SelectItem>
+                    <SelectItem value="false">ไม่ได้ใช้งาน</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -179,9 +267,15 @@ export default function ViewEditUserForm({ data }: UserPropsType) {
             )}
           />
           <Button type="submit">แก้ไขผู้ใช้</Button>
+          <Button
+            onClick={onDelete}
+            type="button"
+            className="ml-2 bg-red-500 hover:bg-red-400"
+          >
+            ลบผู้ใช้
+          </Button>
         </form>
       </Form>
-      <Button className="ml-2 bg-red-500 hover:bg-red-400">ลบผู้ใช้</Button>
     </>
   );
 }

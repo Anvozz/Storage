@@ -6,7 +6,8 @@ import { db } from "@/lib/drizzle";
 import { NewUser, user } from "@/lib/drizzle/schema/users";
 import { eq } from "drizzle-orm";
 import * as bcrypt from "bcrypt";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function deleteUser(id: string) {
   const isHaveuser = await db.select().from(user).where(eq(user.id, id));
@@ -16,7 +17,7 @@ export async function deleteUser(id: string) {
       messgae: "ไม่มีผู้ใช้ในระบบ",
     };
   await db.delete(user).where(eq(user.id, id));
-  revalidatePath("/dashboard/manage-user");
+  revalidatePath("/manage-user");
   return {
     success: true,
     messgae: "ลบผู้ใช้งานสำเร็จ",
@@ -38,7 +39,7 @@ export async function addUser(data: z.infer<typeof addUserschema>) {
   const result = await db
     .insert(user)
     .values({ ...data, isActive: false } as NewUser);
-  revalidatePath("/dashboard/manage-user");
+  revalidatePath("/manage-user");
   return {
     success: true,
     messgae: "สร้างผู้ใช้งานสำเร็จ",

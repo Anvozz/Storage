@@ -51,10 +51,9 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       const isactive: string = row.getValue("isActive");
       const activeText = isactive ? "เปิดใช้งาน" : "ปิดใช้งาน";
-      const color =
-        isactive === "admin"
-          ? "bg-green-500 hover:bg-green-300"
-          : "bg-red-500 hover:bg-red-400";
+      const color = isactive
+        ? "bg-green-500 hover:bg-green-300"
+        : "bg-red-500 hover:bg-red-400";
       return <Badge className={`${color}`}>{activeText}</Badge>;
     },
   },
@@ -109,7 +108,7 @@ export const columns: ColumnDef<User>[] = [
                     } else {
                       Swal.fire({
                         title: deleteUsers.messgae,
-                        text: "หน้าต่างนี้จะปิดโดยอัตโนมัติ",
+                        text: "กดยืนยันเพื่อปิดหน้าต่างนี้",
                         icon: "error",
                         confirmButtonText: "ยืนยัน",
                         confirmButtonColor: "#000",
