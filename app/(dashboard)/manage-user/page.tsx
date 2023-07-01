@@ -16,8 +16,6 @@ async function getData() {
 
 export default async function ManageUser() {
   const users: User[] = await getData();
-
-  console.log(users);
   return (
     <>
       <div className="py-2">

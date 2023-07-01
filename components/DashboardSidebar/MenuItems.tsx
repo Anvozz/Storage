@@ -15,9 +15,11 @@ const MenuItems = ({ icon, title, href }: MenuItemsPropsType) => {
     <li className="h-10">
       <Link
         href={href}
-        className={`group flex space-x-1 hover:bg-gray-100 hover:font-bold hover:stroke-2 rounded-md p-1 ${
+        className={`group flex space-x-1 hover:bg-gray-100 hover:font-semibold hover:stroke-2 rounded-md p-1 ${
           dashboard.isSidebarCollapse && "justify-center"
-        } items-center ${currentPath === href && "bg-gray-100 font-bold"}`}
+        } items-center ${
+          currentPath.startsWith(href) && "bg-gray-100 font-semibold"
+        }`}
       >
         <div className="group-hover:stroke-white">{icon}</div>
         <p

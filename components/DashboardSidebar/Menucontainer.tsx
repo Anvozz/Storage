@@ -8,7 +8,7 @@ const MenuContainer = () => {
       <MenuItems href="/dashboard" title="หน้าแรก" icon={<Home size={20} />} />
       <Menugroup />
       <MenuItems
-        href="/dashboard/manage-user"
+        href="/manage-user"
         title="จัดการผู้ใช้"
         icon={<User size={20} />}
       />

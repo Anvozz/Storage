@@ -1,13 +1,13 @@
 import "./globals.css";
-import { Prompt } from "next/font/google";
+import { Sarabun } from "next/font/google";
 import AuthWrapper from "@/components/Authwrapper";
 import TailwindIndicator from "@/components/tailwind-indicator";
 import DashboardContextProvider from "@/context/DashboardContext";
 
 // const inter = Inter({ subsets: ["latin"] });
-const prompts = Prompt({
+const sarabun = Sarabun({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata = {
@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <AuthWrapper>
       <html lang="en">
-        <body className={prompts.className}>
+        <body className={sarabun.className}>
           <DashboardContextProvider>
             <div>{children}</div>
             <TailwindIndicator />

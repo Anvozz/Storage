@@ -8,6 +8,21 @@ import { eq } from "drizzle-orm";
 import * as bcrypt from "bcrypt";
 import { revalidatePath } from "next/cache";
 
+export async function deleteUser(id: string) {
+  const isHaveuser = await db.select().from(user).where(eq(user.id, id));
+  if (!isHaveuser)
+    return {
+      success: false,
+      messgae: "ไม่มีผู้ใช้ในระบบ",
+    };
+  await db.delete(user).where(eq(user.id, id));
+  revalidatePath("/dashboard/manage-user");
+  return {
+    success: true,
+    messgae: "ลบผู้ใช้งานสำเร็จ",
+  };
+}
+
 export async function addUser(data: z.infer<typeof addUserschema>) {
   const isDuplicate = await db
     .select()
