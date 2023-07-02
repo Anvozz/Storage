@@ -2,8 +2,7 @@ import { db } from "@/lib/drizzle";
 import { User, user } from "@/lib/drizzle/schema/users";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
-import AddUserForm, { addUserschema } from "./add-user-form";
-import { z } from "zod";
+import AddUserForm from "./add-user-form";
 
 export const metadata = {
   title: "Storage | จัดการผู้ใช้",

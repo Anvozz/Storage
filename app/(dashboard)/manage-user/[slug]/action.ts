@@ -8,6 +8,9 @@ import { z } from "zod";
 import _ from "lodash";
 import { revalidatePath } from "next/cache";
 import * as bcrypt from "bcrypt";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { loggerLog } from "@/lib/drizzle/global/logger";
 
 export async function getUserbyid(id: string) {
   const userbyId = await db.select().from(user).where(eq(user.id, id));
@@ -19,6 +22,7 @@ export async function updateUser(
   data: z.infer<typeof editUserschema>,
   id: string
 ) {
+  const session = await getServerSession(authOptions);
   if (!id)
     return {
       success: false,
@@ -41,6 +45,14 @@ export async function updateUser(
   newData = _.omit(newData, ["id"]);
   /** End Set value section */
   await db.update(user).set(newData).where(eq(user.id, id));
+  await loggerLog(
+    "USER_MANAGE",
+    `${session?.user.firstname} ${session?.user.lastname} ได้ทำการแก้ไขผู้ใช้`,
+    {
+      olddata: userinDb,
+      newdata: data,
+    }
+  );
   revalidatePath("/manage-user");
   return {
     success: true,

@@ -9,6 +9,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 export const loggerLog = async (
   method: PropType<InferModel<typeof log, "select">, "logProvider">,
   message: string,
+  metadata: PropType<InferModel<typeof log, "select">, "metadata"> = {},
   id: string | undefined = undefined
 ) => {
   const headersList = headers();
@@ -18,6 +19,7 @@ export const loggerLog = async (
   const data: NewLogger = {
     logProvider: method,
     message: message,
+    metadata: metadata,
     userId: id || session?.user.id,
     ip: forwardedfor || "NOT FOUND",
     device: userAgent || "NOT FOUND",

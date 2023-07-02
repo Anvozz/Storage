@@ -10,10 +10,10 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { loggerLog } from "@/lib/drizzle/global/logger";
 
 export async function deleteUser(id: string) {
   const session = await getServerSession(authOptions);
-  console.log(session);
   const isHaveuser = await db.select().from(user).where(eq(user.id, id));
   if (!isHaveuser)
     return {
@@ -21,6 +21,10 @@ export async function deleteUser(id: string) {
       messgae: "ไม่มีผู้ใช้ในระบบ",
     };
   await db.delete(user).where(eq(user.id, id));
+  await loggerLog(
+    "USER_MANAGE",
+    `${session?.user.firstname} ${session?.user.lastname} ได้ทำการลบผู้ใช้ ${isHaveuser[0].firstname} ${isHaveuser[0].lastname}`
+  );
   revalidatePath("/manage-user");
   return {
     success: true,
@@ -29,6 +33,7 @@ export async function deleteUser(id: string) {
 }
 
 export async function addUser(data: z.infer<typeof addUserschema>) {
+  const session = await getServerSession(authOptions);
   const isDuplicate = await db
     .select()
     .from(user)
@@ -43,6 +48,13 @@ export async function addUser(data: z.infer<typeof addUserschema>) {
   const result = await db
     .insert(user)
     .values({ ...data, isActive: false } as NewUser);
+  await loggerLog(
+    "USER_MANAGE",
+    `${session?.user.firstname} ${session?.user.lastname} ได้ทำการเพิ่มผู้ใช้`,
+    {
+      data: data,
+    }
+  );
   revalidatePath("/manage-user");
   return {
     success: true,

@@ -64,16 +64,6 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     jwt({ token, user }) {
-      // console.log(
-      //   "Token =>",
-      //   token,
-      //   "User =>",
-      //   user,
-      //   "Account =>",
-      //   account,
-      //   "Profile =>",
-      //   profile
-      // );
       if (user) {
         token.id = user.id;
         token.email = user.email;
