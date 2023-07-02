@@ -8,8 +8,12 @@ import { eq } from "drizzle-orm";
 import * as bcrypt from "bcrypt";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function deleteUser(id: string) {
+  const session = await getServerSession(authOptions);
+  console.log(session);
   const isHaveuser = await db.select().from(user).where(eq(user.id, id));
   if (!isHaveuser)
     return {
